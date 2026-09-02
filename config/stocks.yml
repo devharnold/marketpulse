@@ -1,0 +1,10 @@
+# Stocks config to be used when writing the airflow dag
+
+stocks:
+    - AAPL
+    - MSFT
+    - NVDA
+    - AMZN
+    - GOOGL
+    - META
+    - TSLA
