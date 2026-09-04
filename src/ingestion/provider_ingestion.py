@@ -6,7 +6,10 @@ import json
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+#load_dotenv()
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(PROJECT_ROOT / ".env")
 
 API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
 
@@ -68,7 +71,8 @@ def fetch_daily_data(symbol: str) -> list[dict]:
 def save_raw_data(data):
     """Save the raw JSON data to a local JSON file."""
 
-    path = Path("../../data/raw/finapi.json")
+    #path = Path("../../data/raw/finapi.json")
+    path = PROJECT_ROOT / "data" / "raw" / "finapi.json"
 
     path.parent.mkdir(parents=True, exist_ok=True)
 

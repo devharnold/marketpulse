@@ -1,15 +1,92 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Virtual environments
 .venv/
 venv/
+env/
+ENV/
+
+# Environment / secrets
 .env
 .env.*
 !.env.example
-.pytest_cache/
-.vscode/
 
+# Testing / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Linters / type checkers
+.mypy_cache/
+.pyre/
+.ruff_cache/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Databases
 *.duckdb
 *.db
+*.sqlite
+*.sqlite3
+
+# Data files
 data/
 *.csv
+*.tsv
 *.parquet
+*.jsonl
+
+# Logs
+*.log
+logs/
+
+# Airflow
+airflow/logs/
+logs/
+airflow.db
+airflow.cfg
+webserver_config.py
+airflow-webserver.pid
+
+# Airflow generated files
+airflow/__pycache__/
+airflow/logs/
+
+# dbt
+dbt/target/
+target/
+dbt/logs/
+dbt_packages/
+packages/
+*.manifest.json
+
+# dbt generated artifacts
+manifest.json
+run_results.json
+catalog.json
+sources.json
+
+# OS
+.DS_Store
+Thumbs.db
