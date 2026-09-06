@@ -5,7 +5,7 @@ import time
 import pendulum
 import yaml
 
-from airflow.decorators import dag, task
+from airflow.sdk import dag, task
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 from src.ingestion.provider_ingestion import fetch_daily_data
@@ -30,14 +30,12 @@ def start_pipeline():
 
     @task
     def get_symbols():
-
         config_path = Path("/opt/airflow/config/stocks.yml")
 
         with open(config_path, "r") as file:
             config = yaml.safe_load(file)
 
         symbols = config["stocks"]
-
         print(f"Stocks configured: {symbols}")
 
         return symbols
@@ -70,19 +68,15 @@ def start_pipeline():
         """
 
         for index, symbol in enumerate(symbols):
-
             print(f"Fetching {symbol}...")
 
             try:
-
                 data = fetch_daily_data(symbol)
-
                 print(
                     f"Fetched {len(data)} records for {symbol}"
                 )
 
                 for record in data:
-
                     hook.run(
                         sql,
                         parameters=(
