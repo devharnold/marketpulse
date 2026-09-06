@@ -1,0 +1,8 @@
+models:
+    - name: symbol-staging-name
+    description: >
+        Staging model for the stock market financial data,
+        standardizes column names and data types from the public schema
+        providing a clean foundation for downstream tasks
+    columns:
+        - name: 
