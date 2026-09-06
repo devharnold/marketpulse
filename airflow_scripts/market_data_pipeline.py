@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 from pathlib import Path
-import pendulum
+import time
 
+import pendulum
 import yaml
 
 from airflow.decorators import dag, task
@@ -9,13 +10,14 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 from src.ingestion.provider_ingestion import fetch_daily_data
 
+
 localtz = pendulum.timezone("Africa/Nairobi")
 
 
 @dag(
     dag_id="marketpulse_stock_ingestion",
-    schedule="0 18 * * 1-5",
-    start_date=datetime(2026, 1, 1, tz=localtz),
+    schedule="0 6 * * 1-5",
+    start_date=pendulum.datetime(2026, 1, 1, tz=localtz),
     catchup=False,
     default_args={
         "owner": "marketpulse",
@@ -28,21 +30,21 @@ def start_pipeline():
 
     @task
     def get_symbols():
+
         config_path = Path("/opt/airflow/config/stocks.yml")
 
         with open(config_path, "r") as file:
             config = yaml.safe_load(file)
 
-        return config["stocks"]
+        symbols = config["stocks"]
+
+        print(f"Stocks configured: {symbols}")
+
+        return symbols
 
     @task
-    def fetch_stock_data(symbol: str):
-        data = fetch_daily_data(symbol)
+    def fetch_and_load_stocks(symbols):
 
-        return data
-
-    @task
-    def load_to_postgres(data):
         hook = PostgresHook(
             postgres_conn_id="marketpulse_postgres"
         )
@@ -67,25 +69,54 @@ def start_pipeline():
                 volume = EXCLUDED.volume;
         """
 
-        for records in data:
-            for record in records:
-                hook.run(
-                    sql,
-                    parameters=(
-                        record["symbol"],
-                        record["date"],
-                        record["open"],
-                        record["high"],
-                        record["low"],
-                        record["close"],
-                        record["volume"],
-                    ),
+        for index, symbol in enumerate(symbols):
+
+            print(f"Fetching {symbol}...")
+
+            try:
+
+                data = fetch_daily_data(symbol)
+
+                print(
+                    f"Fetched {len(data)} records for {symbol}"
                 )
 
-    # Build the task dependency graph
+                for record in data:
+
+                    hook.run(
+                        sql,
+                        parameters=(
+                            record["symbol"],
+                            record["date"],
+                            record["open"],
+                            record["high"],
+                            record["low"],
+                            record["close"],
+                            record["volume"],
+                        ),
+                    )
+
+                print(
+                    f"Successfully loaded {symbol} into PostgreSQL"
+                )
+
+            except Exception as e:
+
+                print(
+                    f"Failed to process {symbol}: {str(e)}"
+                )
+
+                raise
+
+            # Wait before requesting the next symbol.
+            # This prevents us from hammering Alpha Vantage.
+            if index < len(symbols) - 1:
+                print("Waiting 15 seconds before next API request...")
+                time.sleep(15)
+
     symbols = get_symbols()
-    data = fetch_stock_data.expand(symbol=symbols)
-    load_to_postgres(data)
+
+    fetch_and_load_stocks(symbols)
 
 
 start_pipeline()

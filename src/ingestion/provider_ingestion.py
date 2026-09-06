@@ -19,6 +19,7 @@ BASE_API_URL = "https://www.alphavantage.co/query"
 
 
 def fetch_daily_data(symbol: str) -> list[dict]:
+
     response = requests.get(
         BASE_API_URL,
         params={
@@ -33,9 +34,6 @@ def fetch_daily_data(symbol: str) -> list[dict]:
     response.raise_for_status()
 
     payload = response.json()
-
-    print(f"Alpha Vantage response for {symbol}: ")
-    print(json.dumps(payload, indent=2))
 
     if "Error Message" in payload:
         raise RuntimeError(
@@ -52,13 +50,14 @@ def fetch_daily_data(symbol: str) -> list[dict]:
 
     if not time_series:
         raise RuntimeError(
-            f"No data returned for {symbol}"
+            f"No data returned for {symbol}. "
             f"Alpha Vantage response: {json.dumps(payload, indent=2)}"
         )
 
     results = []
 
     for date, values in time_series.items():
+
         results.append(
             {
                 "symbol": symbol,
@@ -70,6 +69,10 @@ def fetch_daily_data(symbol: str) -> list[dict]:
                 "volume": int(values["5. volume"]),
             }
         )
+
+    print(
+        f"Fetched {len(results)} daily records for {symbol}"
+    )
 
     return results
 
