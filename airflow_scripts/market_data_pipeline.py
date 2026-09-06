@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from pathlib import Path
+import pendulum
 
 import yaml
 
@@ -8,11 +9,13 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 from src.ingestion.provider_ingestion import fetch_daily_data
 
+localtz = pendulum.timezone("Africa/Nairobi")
+
 
 @dag(
     dag_id="marketpulse_stock_ingestion",
     schedule="0 18 * * 1-5",
-    start_date=datetime(2026, 1, 1),
+    start_date=datetime(2026, 1, 1, tz=localtz),
     catchup=False,
     default_args={
         "owner": "marketpulse",
