@@ -48,7 +48,7 @@ def start_pipeline():
         )
 
         sql = """
-            INSERT INTO stock_prices (
+            INSERT INTO raw.stock_prices (
                 symbol,
                 date,
                 open,
