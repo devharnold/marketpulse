@@ -12,6 +12,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(PROJECT_ROOT / ".env")
 
 API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
+if not API_KEY:
+    raise RuntimeError("ALPHA Vantage API Key is not configured in airflow environment!")
 
 BASE_API_URL = "https://www.alphavantage.co/query"
 
@@ -32,6 +34,9 @@ def fetch_daily_data(symbol: str) -> list[dict]:
 
     payload = response.json()
 
+    print(f"Alpha Vantage response for {symbol}: ")
+    print(json.dumps(payload, indent=2))
+
     if "Error Message" in payload:
         raise RuntimeError(
             f"Alpha Vantage error for {symbol}: "
@@ -48,6 +53,7 @@ def fetch_daily_data(symbol: str) -> list[dict]:
     if not time_series:
         raise RuntimeError(
             f"No data returned for {symbol}"
+            f"Alpha Vantage response: {json.dumps(payload, indent=2)}"
         )
 
     results = []

@@ -64,29 +64,25 @@ def start_pipeline():
                 volume = EXCLUDED.volume;
         """
 
-        hook.run(
-            sql,
-            parameters=(
-                data["symbol"],
-                data["date"],
-                data["open"],
-                data["high"],
-                data["low"],
-                data["close"],
-                data["volume"],
-            ),
-        )
+        for records in data:
+            for record in records:
+                hook.run(
+                    sql,
+                    parameters=(
+                        record["symbol"],
+                        record["date"],
+                        record["open"],
+                        record["high"],
+                        record["low"],
+                        record["close"],
+                        record["volume"],
+                    ),
+                )
 
-    # Build the DAG
+    # Build the task dependency graph
     symbols = get_symbols()
-
-    stock_data = fetch_stock_data.expand(
-        symbol=symbols
-    )
-
-    load_to_postgres.expand(
-        data=stock_data
-    )
+    data = fetch_stock_data.expand(symbol=symbols)
+    load_to_postgres(data)
 
 
 start_pipeline()
