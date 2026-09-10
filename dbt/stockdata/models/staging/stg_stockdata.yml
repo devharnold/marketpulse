@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: stg_stock_prices
+    description: "Cleaned and standardized stock price data"
+
+    columns:
+
+      - name: symbol
+        description: "Stock ticker symbol"
+        data_tests:
+          - not_null
+
+      - name: date
+        description: "Trading date"
+        data_tests:
+          - not_null
+
+      - name: open
+        description: "Opening price"
+        data_tests:
+          - not_null
+
+      - name: high
+        description: "Highest price during the trading day"
+        data_tests:
+          - not_null
+
+      - name: low
+        description: "Lowest price during the trading day"
+        data_tests:
+          - not_null
+
+      - name: close
+        description: "Closing price"
+        data_tests:
+          - not_null
+
+      - name: volume
+        description: "Trading volume"
+        data_tests:
+          - not_null

@@ -4,7 +4,11 @@ WITH stock_data AS (
     SELECT
         symbol,
         date,
-        close
+        open,
+        high,
+        low,
+        close,
+        volume
     FROM {{ ref('stg_stockdata') }}
 ),
 
@@ -12,7 +16,11 @@ stock_returns AS (
     SELECT
         symbol,
         date,
+        open,
+        high,
+        low,
         close,
+        volume,
 
         close - LAG(close) OVER (
             PARTITION BY symbol
