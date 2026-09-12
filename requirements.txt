@@ -70,6 +70,7 @@ platformdirs==4.2.0
 proton-core==0.7.4
 proton-keyring-linux==0.2.3
 proton-vpn-api-core==5.6.10
+proton-vpn-cli==1.0.3
 proton-vpn-daemon==0.13.8
 proton-vpn-gtk-app==4.18.1
 psutil==5.9.8
@@ -89,7 +90,7 @@ pyOpenSSL==23.2.0
 pyparsing==3.1.1
 pyrsistent==0.20.0
 pyserial==3.5
-python-apt==2.7.7+ubuntu5.2
+python-apt==2.7.7+ubuntu5.3
 python-dateutil==2.8.2
 python-debian==0.1.49+ubuntu2
 python-gnupg==0.5.2
@@ -106,6 +107,7 @@ setuptools==68.1.2
 six==1.16.0
 SQLAlchemy==1.4.50
 systemd-python==235
+tabulate==0.8.10
 typing_extensions==4.10.0
 ubuntu-drivers-common==0.0.0
 ubuntu-pro-client==8001
