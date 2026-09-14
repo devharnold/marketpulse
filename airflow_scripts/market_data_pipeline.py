@@ -7,6 +7,7 @@ import yaml
 
 from airflow.sdk import dag, task
 from airflow.providers.postgres.hooks.postgres import PostgresHook
+from airflow.operators.bash import BashOperator
 
 from src.ingestion.provider_ingestion import fetch_daily_data
 
@@ -110,7 +111,18 @@ def start_pipeline():
 
     symbols = get_symbols()
 
-    fetch_and_load_stocks(symbols)
+    ingestion = fetch_and_load_stocks(symbols)
+
+    run_dbt_build = BashOperator(
+        task_id="dbt_build",
+        bash_command="""
+            cd /opt/airflow/marketpulse/dbt &&
+            dbt build
+        """,
+    )
+
+    ingestion >> run_dbt_build
+
 
 
 start_pipeline()
